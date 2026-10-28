@@ -1,5 +1,5 @@
 # game-demos
 
-静态演示门户（H5 小游戏、可浏览器播放的视频等），通过 GitHub Pages 发布。
+Static demo portal (H5 games, browser-playable videos, and more), published via GitHub Pages.
 
-- 站点：https://yyfeng2003.github.io/game-demos/
+- Site: https://yyfeng2003.github.io/game-demos/
