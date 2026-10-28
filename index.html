@@ -5,39 +5,234 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>game-demos</title>
   <style>
-    :root { color-scheme: light dark; }
+    :root {
+      color-scheme: dark;
+      --bg: #0b0f14;
+      --card: #141a22;
+      --text: #e8eef4;
+      --muted: #9aa7b5;
+      --accent: #3d9cf0;
+    }
+
+    * { box-sizing: border-box; }
+
     body {
       margin: 0;
       min-height: 100vh;
-      display: grid;
-      place-items: center;
       font-family: "Segoe UI", system-ui, sans-serif;
-      background: radial-gradient(1200px 600px at 20% 0%, #1a2a3a, #0b0f14 60%);
-      color: #e8eef4;
+      background:
+        radial-gradient(1000px 500px at 15% -10%, #1a2a3a, transparent 60%),
+        var(--bg);
+      color: var(--text);
     }
-    main {
-      width: min(960px, 92vw);
-      text-align: center;
-      padding: 2rem 0;
+
+    .wrap {
+      width: min(1100px, 92vw);
+      margin: 0 auto;
+      padding: 2.5rem 0 4rem;
     }
-    h1 { margin: 0 0 0.5rem; font-weight: 650; letter-spacing: 0.02em; }
-    p { margin: 0 0 1.25rem; opacity: 0.75; }
-    video {
+
+    header h1 {
+      margin: 0 0 0.35rem;
+      font-size: clamp(1.6rem, 3vw, 2rem);
+      font-weight: 650;
+      letter-spacing: 0.02em;
+    }
+
+    header p {
+      margin: 0 0 2rem;
+      color: var(--muted);
+    }
+
+    .game-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.5rem;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .game-card {
+      background: var(--card);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .game-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+    }
+
+    .cover-btn {
+      display: block;
       width: 100%;
-      max-height: 70vh;
+      padding: 0;
+      border: 0;
+      cursor: pointer;
       background: #000;
-      border-radius: 8px;
+      position: relative;
+      aspect-ratio: 16 / 9;
+    }
+
+    .cover-btn img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .cover-btn::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      margin: auto;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.55) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M8 5v14l11-7z'/%3E%3C/svg%3E") center / 22px no-repeat;
+      opacity: 0.9;
+      transition: transform 0.15s ease, background-color 0.15s ease;
+      pointer-events: none;
+    }
+
+    .cover-btn:hover::after,
+    .cover-btn:focus-visible::after {
+      transform: scale(1.06);
+      background-color: rgba(61, 156, 240, 0.75);
+    }
+
+    .cover-btn:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    .game-title {
+      margin: 0;
+      padding: 0.9rem 1rem 1.1rem;
+      font-size: 1.05rem;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .player-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: none;
+      place-items: center;
+      padding: 1.5rem;
+      background: rgba(0, 0, 0, 0.78);
+      backdrop-filter: blur(4px);
+    }
+
+    .player-overlay.is-open {
+      display: grid;
+    }
+
+    .player-panel {
+      width: min(960px, 100%);
+      position: relative;
+    }
+
+    .player-panel video {
+      width: 100%;
+      max-height: 80vh;
+      background: #000;
+      border-radius: 10px;
+      display: block;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: -2.4rem;
+      right: 0;
+      border: 0;
+      background: transparent;
+      color: #fff;
+      font-size: 1.6rem;
+      line-height: 1;
+      cursor: pointer;
+      padding: 0.25rem 0.4rem;
+    }
+
+    .close-btn:hover,
+    .close-btn:focus-visible {
+      color: var(--accent);
     }
   </style>
 </head>
 <body>
-  <main>
-    <h1>game-demos</h1>
-    <p>H5 / video demos · GitHub Pages</p>
-    <video controls preload="metadata" playsinline>
-      <source src="videos/harry.mp4" type="video/mp4" />
-      Your browser does not support video playback.
-    </video>
-  </main>
+  <div class="wrap">
+    <header>
+      <h1>game-demos</h1>
+      <p>Click a cover to play</p>
+    </header>
+
+    <ul class="game-list">
+      <li class="game-card">
+        <button
+          class="cover-btn"
+          type="button"
+          data-video="videos/harry.mp4"
+          data-title="Harry's Treasure Hunt"
+          aria-label="Play Harry's Treasure Hunt"
+        >
+          <img
+            src="covers/harrys-treasure-hunt.jpg"
+            alt="Harry's Treasure Hunt cover"
+            loading="lazy"
+          />
+        </button>
+        <h2 class="game-title">Harry's Treasure Hunt</h2>
+      </li>
+    </ul>
+  </div>
+
+  <div class="player-overlay" id="playerOverlay" hidden>
+    <div class="player-panel">
+      <button class="close-btn" type="button" id="closePlayer" aria-label="Close player">&times;</button>
+      <video id="player" controls playsinline></video>
+    </div>
+  </div>
+
+  <script>
+    const overlay = document.getElementById("playerOverlay");
+    const player = document.getElementById("player");
+    const closeBtn = document.getElementById("closePlayer");
+
+    function openPlayer(src, title) {
+      player.src = src;
+      player.setAttribute("aria-label", title);
+      overlay.hidden = false;
+      overlay.classList.add("is-open");
+      player.play().catch(() => {});
+    }
+
+    function closePlayer() {
+      player.pause();
+      player.removeAttribute("src");
+      player.load();
+      overlay.classList.remove("is-open");
+      overlay.hidden = true;
+    }
+
+    document.querySelectorAll(".cover-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        openPlayer(btn.dataset.video, btn.dataset.title || "Game demo");
+      });
+    });
+
+    closeBtn.addEventListener("click", closePlayer);
+    overlay.addEventListener("click", (e) => {
+      if (e.target === overlay) closePlayer();
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && overlay.classList.contains("is-open")) {
+        closePlayer();
+      }
+    });
+  </script>
 </body>
 </html>
